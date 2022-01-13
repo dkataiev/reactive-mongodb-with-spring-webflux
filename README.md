@@ -1,7 +1,7 @@
-# Master Microservices with Spring, Docker, Kubernetes
+# Master Reactive MongoDB with Spring WebFlux
 
 Code for
-the "[Master Microservices with Spring, Docker, Kubernetes](https://www.udemy.com/course/master-microservices-with-spring-docker-kubernetes/)"
+the "[Master Reactive MongoDB with Spring WebFlux](https://www.udemy.com/course/master-reactive-mongodb-with-spring-webflux/)"
 Udemy course.
 
 Deep dive into reactive programming concepts with Spring WebFlux and MongoDB with hands on experience
