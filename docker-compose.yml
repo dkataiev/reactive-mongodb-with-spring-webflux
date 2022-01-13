@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+
+  mongo1:
+    image: mongo:4.4.4
+    container_name: mongo1
+    command: mongod --replSet docker-rs --port 9042
+    ports:
+      - "9042:9042"
+    networks:
+      - mongo-cluster
+
+  mongo2:
+    image: mongo:4.4.4
+    container_name: mongo2
+    command: mongod --replSet docker-rs --port 9142
+    ports:
+      - "9142:9142"
+    networks:
+      - mongo-cluster
+
+  mongo3:
+    image: mongo:4.4.4
+    container_name: mongo3
+    command: mongod --replSet docker-rs --port 9242
+    ports:
+      - "9242:9242"
+    networks:
+      - mongo-cluster
+
+networks:
+  mongo-cluster:
