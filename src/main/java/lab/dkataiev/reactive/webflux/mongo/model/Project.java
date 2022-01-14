@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.List;
 
 @Data
-@Document(collation = "projects")
+@Document(collection = "projects")
 public class Project {
 
     @Id
