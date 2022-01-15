@@ -36,4 +36,22 @@ public class ProjectHandler {
                         .bodyValue(data));
     }
 
+    public Mono<ServerResponse> findAll(ServerRequest serverRequest) {
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(projectService.findAll(), Project.class);
+    }
+
+    public Mono<ServerResponse> findById(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+        return projectService.findById(id)
+                .flatMap(data -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(data))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> deleteById(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.deleteById(id), Void.class).log();
+    }
+
+
 }

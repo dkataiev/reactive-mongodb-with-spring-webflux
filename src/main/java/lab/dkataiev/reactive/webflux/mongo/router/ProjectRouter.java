@@ -15,10 +15,16 @@ public class ProjectRouter {
     @Bean
     public RouterFunction<ServerResponse> routeProjects(ProjectHandler handler) {
         return RouterFunctions
-                .route(RequestPredicates.POST("/project/create")
+                .route(RequestPredicates.POST("/projects/create")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createProject)
-                .andRoute(RequestPredicates.POST("/project/createTask")
-                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createTask);
+                .andRoute(RequestPredicates.POST("/projects/createTask")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createTask)
+                .andRoute(RequestPredicates.GET("/projects")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findAll)
+                .andRoute(RequestPredicates.GET("/projects/{id}")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findById)
+                .andRoute(RequestPredicates.DELETE("/projects/{id}")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteById);
     }
 
 }

@@ -7,6 +7,7 @@ import lab.dkataiev.reactive.webflux.mongo.repository.TaskRepository;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -29,5 +30,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Mono<Task> createTask(Task task) {
         return taskRepository.save(task);
+    }
+
+    @Override
+    public Flux<Project> findAll() {
+        return projectRepository.findAll();
+    }
+
+    @Override
+    public Mono<Project> findById(String id) {
+        return projectRepository.findById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteById(String id) {
+        return projectRepository.deleteById(id);
     }
 }
