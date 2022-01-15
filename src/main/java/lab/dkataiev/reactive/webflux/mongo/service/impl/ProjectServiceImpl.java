@@ -23,7 +23,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Mono<Project> createProject(Project project) {
+    public Mono<Project> createOrUpdateProject(Project project) {
         return projectRepository.save(project);
     }
 

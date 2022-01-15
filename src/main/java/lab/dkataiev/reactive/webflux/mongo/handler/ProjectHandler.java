@@ -4,6 +4,8 @@ import lab.dkataiev.reactive.webflux.mongo.model.Project;
 import lab.dkataiev.reactive.webflux.mongo.model.Task;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -20,12 +22,18 @@ public class ProjectHandler {
         this.projectService = projectService;
     }
 
-    public Mono<ServerResponse> createProject(ServerRequest serverRequest) {
+    public Mono<ServerResponse> createOrUpdateProject(ServerRequest serverRequest) {
         Mono<Project> project = serverRequest.bodyToMono(Project.class);
-        return project.flatMap(projectService::createProject)
+        return project.flatMap(projectService::createOrUpdateProject)
                 .flatMap(data -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(data));
+                        .bodyValue(data))
+                .onErrorResume(error -> {
+                    if (error instanceof OptimisticLockingFailureException) {
+                        return ServerResponse.badRequest().build();
+                    }
+                    return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                });
     }
 
     public Mono<ServerResponse> createTask(ServerRequest serverRequest) {

@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProjectService {
 
-    Mono<Project> createProject(Project project);
+    Mono<Project> createOrUpdateProject(Project project);
 
     Mono<Task> createTask(Task task);
 

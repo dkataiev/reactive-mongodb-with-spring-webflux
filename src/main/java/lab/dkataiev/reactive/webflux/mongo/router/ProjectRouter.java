@@ -16,13 +16,15 @@ public class ProjectRouter {
     public RouterFunction<ServerResponse> routeProjects(ProjectHandler handler) {
         return RouterFunctions
                 .route(RequestPredicates.POST("/projects/create")
-                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createProject)
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createOrUpdateProject)
                 .andRoute(RequestPredicates.POST("/projects/createTask")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createTask)
                 .andRoute(RequestPredicates.GET("/projects")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findAll)
                 .andRoute(RequestPredicates.GET("/projects/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findById)
+                .andRoute(RequestPredicates.POST("/projects/{id}")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createOrUpdateProject)
                 .andRoute(RequestPredicates.DELETE("/projects/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteById);
     }
