@@ -4,8 +4,6 @@ import lab.dkataiev.reactive.webflux.mongo.model.Project;
 import lab.dkataiev.reactive.webflux.mongo.model.Task;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -59,6 +57,51 @@ public class ProjectHandler {
         String id = serverRequest.pathVariable("id");
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.deleteById(id), Void.class).log();
+    }
+
+    public Mono<ServerResponse> findByName(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByName(name), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByNameNot(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameNot(name), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByNameLike(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameLike(name), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByNameRegex(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        String regex = "^" + name;
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameRegex(regex), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByEstimatedCostGreaterThan(ServerRequest serverRequest) {
+        String cost = serverRequest.queryParam("cost").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByEstimatedCostGreaterThan(Long.valueOf(cost)), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByEstimatedCostBetween(ServerRequest serverRequest) {
+        String from = serverRequest.queryParam("from").get();
+        String to = serverRequest.queryParam("to").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByEstimatedCostBetween(Long.valueOf(from), Long.valueOf(to)), Project.class)
+                .log();
     }
 
 

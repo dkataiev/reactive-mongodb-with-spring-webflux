@@ -17,4 +17,16 @@ public interface ProjectService {
 
     Mono<Void> deleteById(String id);
 
+    Flux<Project> findByName(String name);
+
+    Flux<Project> findByNameNot(String name);
+
+    Flux<Project> findByNameLike(String name);
+
+    Flux<Project> findByNameRegex(String name);
+
+    Flux<Project> findByEstimatedCostGreaterThan(Long cost);
+
+    Flux<Project> findByEstimatedCostBetween(Long from, Long to);
+
 }
