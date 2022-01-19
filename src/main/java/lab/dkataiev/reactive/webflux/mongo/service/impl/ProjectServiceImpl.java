@@ -6,6 +6,7 @@ import lab.dkataiev.reactive.webflux.mongo.repository.ProjectRepository;
 import lab.dkataiev.reactive.webflux.mongo.repository.TaskRepository;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -75,5 +76,25 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Flux<Project> findByEstimatedCostBetween(Long from, Long to) {
         return projectRepository.findByEstimatedCostBetween(from, to);
+    }
+
+    @Override
+    public Flux<Project> findByNameQuery(String name) {
+        return projectRepository.findByNameQuery(name);
+    }
+
+    @Override
+    public Flux<Project> findByNameAndCostQuery(String name, Long cost) {
+        return projectRepository.findByNameAndCostQuery(name, cost);
+    }
+
+    @Override
+    public Flux<Project> findByEstimatedCostBetweenQuery(Long from, Long to) {
+        return projectRepository.findByEstimatedCostBetweenQuery(from, to, Sort.by(Sort.Direction.DESC, "cost"));
+    }
+
+    @Override
+    public Flux<Project> findByNameRegexQuery(String name) {
+        return projectRepository.findByNameRegexQuery(name);
     }
 }

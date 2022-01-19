@@ -104,5 +104,35 @@ public class ProjectHandler {
                 .log();
     }
 
+    public Mono<ServerResponse> findByNameQuery(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameQuery(name), Project.class).log();
+    }
 
+    public Mono<ServerResponse> findByNameAndCostQuery(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        String cost = serverRequest.queryParam("cost").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameAndCostQuery(name, Long.valueOf(cost)), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByEstimatedCostBetweenQuery(ServerRequest serverRequest) {
+        String from = serverRequest.queryParam("from").get();
+        String to = serverRequest.queryParam("to").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByEstimatedCostBetweenQuery(Long.valueOf(from), Long.valueOf(to)), Project.class)
+                .log();
+    }
+
+    public Mono<ServerResponse> findByNameRegexQuery(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        String regex = "^" + name;
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameRegexQuery(regex), Project.class).log();
+    }
 }

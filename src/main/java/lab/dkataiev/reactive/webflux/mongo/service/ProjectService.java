@@ -29,4 +29,12 @@ public interface ProjectService {
 
     Flux<Project> findByEstimatedCostBetween(Long from, Long to);
 
+    Flux<Project> findByNameQuery(String name);
+
+    Flux<Project> findByNameAndCostQuery(String name, Long cost);
+
+    Flux<Project> findByEstimatedCostBetweenQuery(Long from, Long to);
+
+    Flux<Project> findByNameRegexQuery(String name);
+
 }

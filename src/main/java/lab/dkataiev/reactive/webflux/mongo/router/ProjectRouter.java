@@ -27,6 +27,7 @@ public class ProjectRouter {
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::createOrUpdateProject)
                 .andRoute(RequestPredicates.DELETE("/projects/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteById)
+
                 .andRoute(RequestPredicates.GET("/projects/find/byName")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByName)
                 .andRoute(RequestPredicates.GET("/projects/find/byNameNot")
@@ -38,7 +39,17 @@ public class ProjectRouter {
                 .andRoute(RequestPredicates.GET("/projects/find/byEstimatedCostGreaterThan")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostGreaterThan)
                 .andRoute(RequestPredicates.GET("/projects/find/byEstimatedCostBetween")
-                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostBetween);
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostBetween)
+
+                .andRoute(RequestPredicates.GET("/projects/query/byName")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameQuery)
+                .andRoute(RequestPredicates.GET("/projects/query/byNameAndCost")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameAndCostQuery)
+                .andRoute(RequestPredicates.GET("/projects/query/byEstimatedCostBetween")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostBetweenQuery)
+                .andRoute(RequestPredicates.GET("/projects/query/byNameRegex")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameRegexQuery)
+                ;
     }
 
 }
