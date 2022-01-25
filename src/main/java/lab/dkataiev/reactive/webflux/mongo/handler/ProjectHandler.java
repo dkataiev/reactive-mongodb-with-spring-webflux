@@ -4,6 +4,7 @@ import lab.dkataiev.reactive.webflux.mongo.model.Project;
 import lab.dkataiev.reactive.webflux.mongo.model.Task;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import lab.dkataiev.reactive.webflux.mongo.service.ResultByStartDateAndCost;
+import lab.dkataiev.reactive.webflux.mongo.service.ResultProjectTasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -187,5 +188,11 @@ public class ProjectHandler {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.findCostsGroupByStartDateForProjectsCostGreaterThan(Long.valueOf(cost)),
                         ResultByStartDateAndCost.class).log();
+    }
+
+    public Mono<ServerResponse> findAllProjectTasks(ServerRequest serverRequest) {
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findAllProjectTasks(), ResultProjectTasks.class).log();
     }
 }

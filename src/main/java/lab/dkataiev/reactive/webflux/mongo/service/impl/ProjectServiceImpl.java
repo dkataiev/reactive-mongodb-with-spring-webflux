@@ -7,14 +7,18 @@ import lab.dkataiev.reactive.webflux.mongo.repository.TaskRepository;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
 import lab.dkataiev.reactive.webflux.mongo.service.ResultByStartDateAndCost;
 import lab.dkataiev.reactive.webflux.mongo.service.ResultCount;
+import lab.dkataiev.reactive.webflux.mongo.service.ResultProjectTasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.CountOperation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -160,5 +164,21 @@ public class ProjectServiceImpl implements ProjectService {
 
         Aggregation aggregation = Aggregation.newAggregation(matchStage, groupStage, sortByTotalStage);
         return mongoTemplate.aggregate(aggregation, "projects", ResultByStartDateAndCost.class);
+    }
+
+    @Override
+    public Flux<ResultProjectTasks> findAllProjectTasks() {
+        LookupOperation lookupOperation = LookupOperation.newLookup().from("tasks")
+                .localField("_id").foreignField("pid")
+                .as("ProjectsTasks");
+
+        UnwindOperation unwindOperation = Aggregation.unwind("ProjectsTasks");
+        ProjectionOperation projectionOperation = Aggregation.project()
+                .andExpression("_id").as("id")
+                .andExpression("name").as("name")
+                .andExpression("ProjectsTasks.name").as("taskName")
+                .andExpression("ProjectsTasks.ownerName").as("taskOwnerName");
+        Aggregation aggregation = Aggregation.newAggregation(lookupOperation, unwindOperation, projectionOperation);
+        return mongoTemplate.aggregate(aggregation, "projects", ResultProjectTasks.class);
     }
 }

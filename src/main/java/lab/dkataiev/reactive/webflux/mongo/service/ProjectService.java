@@ -51,4 +51,6 @@ public interface ProjectService {
 
     Flux<ResultByStartDateAndCost> findCostsGroupByStartDateForProjectsCostGreaterThan(Long cost);
 
+    Flux<ResultProjectTasks> findAllProjectTasks();
+
 }

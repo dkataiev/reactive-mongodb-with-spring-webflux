@@ -65,6 +65,9 @@ public class ProjectRouter {
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findNumberOfProjectsCostGreaterThan)
                 .andRoute(RequestPredicates.GET("/projects/aggregate/costsGroupByStartDateForProjectsCostGreaterThan")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findCostsGroupByStartDateForProjectsCostGreaterThan)
+
+                .andRoute(RequestPredicates.GET("/projects/aggregate/allProjectTasks")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findAllProjectTasks)
                 ;
     }
 
