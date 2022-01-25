@@ -37,4 +37,14 @@ public interface ProjectService {
 
     Flux<Project> findByNameRegexQuery(String name);
 
+    Flux<Project> findByNameWithTemplate(String name);
+
+    Flux<Project> findByEstimatedCostBetweenWithTemplate(Long from, Long to);
+
+    Flux<Project> findByNameRegexWithTemplate(String name);
+
+    Mono<Void> upsertCostWithCriteriaTemplate(String id, Long cost);
+
+    Mono<Void> deleteByIdWithTemplate(String id);
+
 }

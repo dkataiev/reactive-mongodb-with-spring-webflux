@@ -49,6 +49,17 @@ public class ProjectRouter {
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostBetweenQuery)
                 .andRoute(RequestPredicates.GET("/projects/query/byNameRegex")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameRegexQuery)
+
+                .andRoute(RequestPredicates.GET("/projects/template/byName")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameQueryWithTemplate)
+                .andRoute(RequestPredicates.GET("/projects/template/byEstimatedCostBetween")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByEstimatedCostBetweenWithTemplate)
+                .andRoute(RequestPredicates.GET("/projects/template/byNameRegex")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findByNameRegexWithTemplate)
+                .andRoute(RequestPredicates.POST("/projects/template/upsertCost")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::upsertCostWithCriteriaTemplate)
+                .andRoute(RequestPredicates.DELETE("/projects/template/{id}")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteByIdWithTemplate)
                 ;
     }
 

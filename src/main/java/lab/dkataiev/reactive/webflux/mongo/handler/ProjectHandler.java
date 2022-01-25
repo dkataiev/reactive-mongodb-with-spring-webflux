@@ -135,4 +135,43 @@ public class ProjectHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.findByNameRegexQuery(regex), Project.class).log();
     }
+
+    public Mono<ServerResponse> findByNameQueryWithTemplate(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameWithTemplate(name), Project.class).log();
+    }
+
+    public Mono<ServerResponse> findByEstimatedCostBetweenWithTemplate(ServerRequest serverRequest) {
+        String from = serverRequest.queryParam("from").get();
+        String to = serverRequest.queryParam("to").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByEstimatedCostBetweenWithTemplate(Long.valueOf(from), Long.valueOf(to)), Project.class)
+                .log();
+    }
+
+    public Mono<ServerResponse> findByNameRegexWithTemplate(ServerRequest serverRequest) {
+        String name = serverRequest.queryParam("name").get();
+        String regex = "^" + name;
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findByNameRegexWithTemplate(regex), Project.class).log();
+    }
+
+    public Mono<ServerResponse> upsertCostWithCriteriaTemplate(ServerRequest serverRequest) {
+        String id = serverRequest.queryParam("id").get();
+        String cost = serverRequest.queryParam("cost").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.upsertCostWithCriteriaTemplate(id, Long.valueOf(cost)), Void.class).log();
+
+    }
+
+    public Mono<ServerResponse> deleteByIdWithTemplate(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.deleteByIdWithTemplate(id), Void.class).log();
+    }
 }
