@@ -47,4 +47,8 @@ public interface ProjectService {
 
     Mono<Void> deleteByIdWithTemplate(String id);
 
+    Mono<Long> findNumberOfProjectsCostGreaterThan(Long cost);
+
+    Flux<ResultByStartDateAndCost> findCostsGroupByStartDateForProjectsCostGreaterThan(Long cost);
+
 }

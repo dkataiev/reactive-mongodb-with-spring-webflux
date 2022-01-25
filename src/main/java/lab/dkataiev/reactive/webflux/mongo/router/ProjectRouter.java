@@ -60,6 +60,11 @@ public class ProjectRouter {
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::upsertCostWithCriteriaTemplate)
                 .andRoute(RequestPredicates.DELETE("/projects/template/{id}")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteByIdWithTemplate)
+
+                .andRoute(RequestPredicates.GET("/projects/aggregate/numberOfProjectsCostGreaterThan")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findNumberOfProjectsCostGreaterThan)
+                .andRoute(RequestPredicates.GET("/projects/aggregate/costsGroupByStartDateForProjectsCostGreaterThan")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findCostsGroupByStartDateForProjectsCostGreaterThan)
                 ;
     }
 

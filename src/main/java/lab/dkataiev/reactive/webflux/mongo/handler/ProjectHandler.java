@@ -3,6 +3,7 @@ package lab.dkataiev.reactive.webflux.mongo.handler;
 import lab.dkataiev.reactive.webflux.mongo.model.Project;
 import lab.dkataiev.reactive.webflux.mongo.model.Task;
 import lab.dkataiev.reactive.webflux.mongo.service.ProjectService;
+import lab.dkataiev.reactive.webflux.mongo.service.ResultByStartDateAndCost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -173,5 +174,18 @@ public class ProjectHandler {
         String id = serverRequest.pathVariable("id");
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.deleteByIdWithTemplate(id), Void.class).log();
+    }
+
+    public Mono<ServerResponse> findNumberOfProjectsCostGreaterThan(ServerRequest serverRequest) {
+        String cost = serverRequest.queryParam("cost").get();
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findNumberOfProjectsCostGreaterThan(Long.valueOf(cost)), Long.class).log();
+    }
+
+    public Mono<ServerResponse> findCostsGroupByStartDateForProjectsCostGreaterThan(ServerRequest serverRequest) {
+        String cost = serverRequest.queryParam("cost").get();
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.findCostsGroupByStartDateForProjectsCostGreaterThan(Long.valueOf(cost)),
+                        ResultByStartDateAndCost.class).log();
     }
 }
