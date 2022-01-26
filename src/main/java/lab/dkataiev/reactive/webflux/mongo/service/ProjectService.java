@@ -53,4 +53,6 @@ public interface ProjectService {
 
     Flux<ResultProjectTasks> findAllProjectTasks();
 
+    Mono<Void> saveProjectAndTask(Mono<Project> p, Mono<Task> t);
+
 }

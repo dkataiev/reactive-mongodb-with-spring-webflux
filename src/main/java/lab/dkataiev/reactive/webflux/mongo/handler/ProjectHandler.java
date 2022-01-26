@@ -195,4 +195,13 @@ public class ProjectHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.findAllProjectTasks(), ResultProjectTasks.class).log();
     }
+
+    public Mono<ServerResponse> saveProjectAndTask(ServerRequest serverRequest) {
+        Project project = Project.builder()._id("8").name("Project8").build();
+        Task task = Task.builder()._id("10").projectId("6").build();
+
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.saveProjectAndTask(Mono.just(project), Mono.just(task)), Void.class).log();
+    }
 }

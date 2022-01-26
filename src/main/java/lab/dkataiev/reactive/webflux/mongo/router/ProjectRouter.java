@@ -68,6 +68,9 @@ public class ProjectRouter {
 
                 .andRoute(RequestPredicates.GET("/projects/aggregate/allProjectTasks")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::findAllProjectTasks)
+
+                .andRoute(RequestPredicates.POST("/projects/txn/save")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::saveProjectAndTask)
                 ;
     }
 

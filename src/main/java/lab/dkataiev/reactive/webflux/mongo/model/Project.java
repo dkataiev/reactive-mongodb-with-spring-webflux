@@ -1,5 +1,6 @@
 package lab.dkataiev.reactive.webflux.mongo.model;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.List;
 
 @Data
+@Builder
 @Document(collection = "projects")
 public class Project {
 

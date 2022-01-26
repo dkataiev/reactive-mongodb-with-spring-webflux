@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -180,5 +181,13 @@ public class ProjectServiceImpl implements ProjectService {
                 .andExpression("ProjectsTasks.ownerName").as("taskOwnerName");
         Aggregation aggregation = Aggregation.newAggregation(lookupOperation, unwindOperation, projectionOperation);
         return mongoTemplate.aggregate(aggregation, "projects", ResultProjectTasks.class);
+    }
+
+    @Override
+    @Transactional
+    public Mono<Void> saveProjectAndTask(Mono<Project> p, Mono<Task> t) {
+        return p.flatMap(projectRepository::save)
+                .then(t).flatMap(taskRepository::save)
+                .then();
     }
 }

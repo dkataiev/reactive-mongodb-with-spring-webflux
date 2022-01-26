@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
+import org.springframework.data.mongodb.ReactiveMongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+//@EnableTransactionManagement
 @EnableReactiveMongoRepositories(basePackages = "lab.dkataiev.reactive.webflux.mongo.repository")
 public class ReactiveDbConfiguration extends AbstractReactiveMongoConfiguration {
 
@@ -47,6 +50,11 @@ public class ReactiveDbConfiguration extends AbstractReactiveMongoConfiguration 
     @Override
     public ReactiveMongoTemplate reactiveMongoTemplate(ReactiveMongoDatabaseFactory databaseFactory, MappingMongoConverter mongoConverter) {
         return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
+    }
+
+    @Bean
+    public ReactiveMongoTransactionManager transactionManager(ReactiveMongoDatabaseFactory factory) {
+        return new ReactiveMongoTransactionManager(factory);
     }
 
     @Override
