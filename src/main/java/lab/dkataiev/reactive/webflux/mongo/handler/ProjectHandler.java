@@ -196,6 +196,7 @@ public class ProjectHandler {
                 .body(projectService.findAllProjectTasks(), ResultProjectTasks.class).log();
     }
 
+    // Does not work as a transaction. If project can be created and task fails - project is still created.
     public Mono<ServerResponse> saveProjectAndTask(ServerRequest serverRequest) {
         Project project = Project.builder()._id("8").name("Project8").build();
         Task task = Task.builder()._id("10").projectId("6").build();
