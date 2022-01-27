@@ -205,4 +205,31 @@ public class ProjectHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(projectService.saveProjectAndTask(Mono.just(project), Mono.just(task)), Void.class).log();
     }
+
+    public Mono<ServerResponse> saveProjectToGrid(ServerRequest serverRequest) {
+        Project p = Project.builder()
+                ._id("20")
+                .name("Grid Project")
+                .build();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.saveProjectToGrid(p), Void.class).log();
+
+    }
+
+    public Mono<ServerResponse> loadProjectFromGrid(ServerRequest serverRequest) {
+        String id = serverRequest.queryParam("pid").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.loadProjectFromGrid(id), Project.class).log();
+    }
+
+    public Mono<ServerResponse> deleteProjectFromGrid(ServerRequest serverRequest) {
+        String id = serverRequest.queryParam("pid").get();
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(projectService.deleteProjectFromGrid(id), Project.class).log();
+    }
+
+
 }

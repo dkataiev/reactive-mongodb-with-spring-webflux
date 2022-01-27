@@ -71,6 +71,13 @@ public class ProjectRouter {
 
                 .andRoute(RequestPredicates.POST("/projects/txn/save")
                         .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::saveProjectAndTask)
+
+                .andRoute(RequestPredicates.POST("/projects/grid/save")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::saveProjectToGrid)
+                .andRoute(RequestPredicates.GET("/projects/grid/get")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::loadProjectFromGrid)
+                .andRoute(RequestPredicates.DELETE("/projects/grid/delete")
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), handler::deleteProjectFromGrid)
                 ;
     }
 

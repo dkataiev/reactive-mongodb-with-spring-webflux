@@ -1,5 +1,12 @@
 package lab.dkataiev.reactive.webflux.mongo.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.primitives.Bytes;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import lab.dkataiev.reactive.webflux.mongo.model.Project;
 import lab.dkataiev.reactive.webflux.mongo.model.Task;
 import lab.dkataiev.reactive.webflux.mongo.repository.ProjectRepository;
@@ -9,6 +16,9 @@ import lab.dkataiev.reactive.webflux.mongo.service.ResultByStartDateAndCost;
 import lab.dkataiev.reactive.webflux.mongo.service.ResultCount;
 import lab.dkataiev.reactive.webflux.mongo.service.ResultProjectTasks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -22,10 +32,14 @@ import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsResource;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -33,12 +47,20 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final ReactiveMongoTemplate mongoTemplate;
+    private final ReactiveGridFsTemplate gridFsTemplate;
+
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, ReactiveMongoTemplate mongoTemplate) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository,
+                              ReactiveMongoTemplate mongoTemplate, ReactiveGridFsTemplate gridFsTemplate) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.mongoTemplate = mongoTemplate;
+        this.gridFsTemplate = gridFsTemplate;
+
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -189,5 +211,62 @@ public class ProjectServiceImpl implements ProjectService {
         return p.flatMap(projectRepository::save)
                 .then(t).flatMap(taskRepository::save)
                 .then();
+    }
+
+    @Override
+    public Mono<Void> saveProjectToGrid(Project p) {
+        String s = serializeToJson(p);
+        byte[] serialized = s.getBytes();
+
+        DBObject metaData = new BasicDBObject();
+        metaData.put("projectId", p.get_id());
+        DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+        DefaultDataBuffer dataBuffer = factory.wrap(serialized);
+        Flux<DataBuffer> body = Flux.just(dataBuffer);
+        return gridFsTemplate.store(body, p.get_id(), metaData).then();
+    }
+
+    @Override
+    // TODO: #2 Fix method.
+    public Mono<Project> loadProjectFromGrid(String projectId) {
+        Mono<GridFSFile> file = gridFsTemplate.findOne(
+                Query.query(Criteria.where("metadata.projectId").is(projectId))
+                        .with(Sort.by(Sort.Direction.DESC, "uploadDate"))
+                        .limit(1));
+
+        Flux<byte[]> byteSeq = file.flatMap(gridFsTemplate::getResource)
+                .flatMapMany(ReactiveGridFsResource::getDownloadStream)
+                .map(buffer -> {
+                    byte[] b = new byte[buffer.readableByteCount()];
+                    buffer.read(b);
+                    return b;
+                });
+
+        return byteSeq.collectList().flatMap(bytes -> {
+            byte[] data = Bytes.concat(bytes.toArray(new byte[bytes.size()][]));
+            String s = new String(data, StandardCharsets.UTF_8);
+            return Mono.just(deserializeFromJson(s));
+        });
+    }
+
+    @Override
+    public Mono<Void> deleteProjectFromGrid(String projectId) {
+        return gridFsTemplate.delete(Query.query(Criteria.where("metadata.projectId").is(projectId)));
+    }
+
+    private String serializeToJson(Project p) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(p);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Project deserializeFromJson(String json) {
+        try {
+            return objectMapper.readValue(json, Project.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

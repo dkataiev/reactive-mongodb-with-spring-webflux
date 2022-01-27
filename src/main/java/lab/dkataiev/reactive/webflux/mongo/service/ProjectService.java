@@ -55,4 +55,10 @@ public interface ProjectService {
 
     Mono<Void> saveProjectAndTask(Mono<Project> p, Mono<Task> t);
 
+    Mono<Void> saveProjectToGrid(Project p);
+
+    Mono<Project> loadProjectFromGrid(String projectId);
+
+    Mono<Void> deleteProjectFromGrid(String projectId);
+
 }

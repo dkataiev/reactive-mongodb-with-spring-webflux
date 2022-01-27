@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.ReactiveMongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 //@EnableTransactionManagement
@@ -55,6 +55,11 @@ public class ReactiveDbConfiguration extends AbstractReactiveMongoConfiguration 
     @Bean
     public ReactiveMongoTransactionManager transactionManager(ReactiveMongoDatabaseFactory factory) {
         return new ReactiveMongoTransactionManager(factory);
+    }
+
+    @Bean
+    public ReactiveGridFsTemplate reactiveGridFsTemplate(MappingMongoConverter mongoConverter) {
+        return new ReactiveGridFsTemplate(reactiveMongoDbFactory(), mongoConverter);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package lab.dkataiev.reactive.webflux.mongo.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -20,8 +21,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-@Component
-@Order(-2) //TODO: strange way to give a higher priority than DefaultErrorWebExceptionHandler, it should definitely be a better way.
+@Slf4j
+//@Component
+//@Order(-2) //TODO: strange way to give a higher priority than DefaultErrorWebExceptionHandler, it should definitely be a better way.
 public class GlobalErrorHandler extends AbstractErrorWebExceptionHandler {
 
     public GlobalErrorHandler(ErrorAttributes errorAttributes, ApplicationContext applicationContext,
